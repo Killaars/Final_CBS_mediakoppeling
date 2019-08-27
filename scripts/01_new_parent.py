@@ -3,7 +3,7 @@ import pandas as pd
 from pathlib import Path
 import argparse
 
-from project_functions import preprocessing_parent
+from final_project_functions import preprocessing_parent
 from project_variables import project_path,\
                               all_parents_location
 

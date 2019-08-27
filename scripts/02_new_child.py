@@ -9,7 +9,7 @@ import recordlinkage
 from recordlinkage.index import Full
 import spacy
 
-from project_functions import preprocessing_child,\
+from final_project_functions import preprocessing_child,\
                                 find_link,\
                                 find_id,\
                                 find_title,\
