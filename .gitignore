@@ -1,0 +1,7 @@
+data/
+model/
+nltk_data/*
+!nltk_data/corpora/stopwords/dutch
+*.7z
+scripts/*
+!scripts/*.py
