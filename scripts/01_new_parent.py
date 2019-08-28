@@ -29,7 +29,7 @@ new_parent = preprocessing_parent(new_parent)
 
 # Add new parent to older parents if not statline
 if len(new_parent[new_parent['title'].str.contains('statline') == False])>0:
-    all_parents = pd.concat([all_parents, new_parent])
+    all_parents = pd.concat([all_parents, new_parent], sort=False)
     all_parents.reset_index(drop=True, inplace=True)
 
 # Write parent database
