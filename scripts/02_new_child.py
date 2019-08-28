@@ -25,6 +25,9 @@ from final_project_functions import preprocessing_child,\
                                 remove_numbers
 from project_variables import project_path,\
                               all_parents_location
+                              
+import warnings
+warnings.filterwarnings("ignore")
 
 path = Path(project_path)
 modelpath = path / 'scripts'
@@ -204,7 +207,7 @@ feature_cols = ['date_binary',
                 'numbers_lenmatches']
 
 to_predict = features[feature_cols]
-to_predict[to_predict.isna()] = 0
+to_predict = to_predict.fillna(0)
 y_proba = loaded_model.predict_proba(to_predict)
 
 features.loc[:, 'predicted_nomatch'] = y_proba[:, 0]
@@ -215,7 +218,9 @@ features.sort_values(by=['predicted_match'], ascending=False, inplace=True)
 
 # final DF
 to_return = features[['child_id', 'parent_id', 'predicted_match']]
-to_return.loc[:, 'predicted_match'] = to_return[['predicted_match']].applymap("{0:.4f}".format)
 
 # save
-to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))))
+to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))),
+         index = False, 
+         header = ['c','p','%'],
+         float_format='%.4f')

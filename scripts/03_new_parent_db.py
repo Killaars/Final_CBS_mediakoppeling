@@ -17,9 +17,9 @@ my_parser.add_argument('filename',
                        help='Filename of the raw parents csv, relative to the project path specified in project_variables')
 args = my_parser.parse_args()
 parents_filename = args.filename
+all_parents = pd.read_csv(str(path / parents_filename))
 
 #all_parents = pd.read_csv(str(path / 'data/rawparents/rawparents.csv'))
-all_parents = pd.read_csv(str(path / parents_filename))
 
 # Remove parents older than 2 years
 today = date.today()

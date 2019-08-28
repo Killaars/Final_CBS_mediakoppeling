@@ -225,8 +225,14 @@ def similarity(row,nlp):
         content_parent = nlp(row['content_without_stopwords'])
         content_child = nlp(row['content_child_no_stop'])
         
-        title_similarity = title_parent.similarity(title_child)
-        content_similarity = content_parent.similarity(content_child)
+        if (title_parent.vector_norm == 0) | (title_child.vector_norm == 0):
+            title_similarity = 0
+        else:
+            title_similarity = title_parent.similarity(title_child)
+        if (content_parent.vector_norm == 0) | (content_child.vector_norm == 0):
+            content_similarity = 0
+        else:
+            content_similarity = content_parent.similarity(content_child)
         return pd.Series([title_similarity, content_similarity])
     except:
         return pd.Series([0, 0])
