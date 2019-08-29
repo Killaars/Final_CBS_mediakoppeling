@@ -10,6 +10,7 @@ from recordlinkage.index import Full
 import spacy
 
 from final_project_functions import preprocessing_child,\
+                                preprocessing_parent,\
                                 find_link,\
                                 find_id,\
                                 find_title,\
@@ -25,6 +26,7 @@ from final_project_functions import preprocessing_child,\
                                 remove_numbers
 from project_variables import project_path,\
                               all_parents_location
+all_parents_location = 'data/all_parents.csv'
                               
 import warnings
 warnings.filterwarnings("ignore")
@@ -47,14 +49,16 @@ args = my_parser.parse_args()
 child_id = args.child_id
 nr_matches = args.nr_matches
 
+#child_id = '246'
 #child_id = '304042'
 #nr_matches = 10
 
 #---------------------------#
 # Reading and preprocessing #
 #---------------------------#
-new_child = pd.read_csv(str(path / ('data/c_%s.csv' %(child_id))), index_col=0)
+new_child = pd.read_csv(str(path / ('data/c_%s.csv' %(child_id))))#, index_col=0)
 new_child = preprocessing_child(new_child)
+
 
 # Select numbers from children
 new_child.loc[:, 'child_numbers'] = new_child.apply(regex, args=('content', ), axis=1)
@@ -69,7 +73,7 @@ new_child.loc[:, 'cbs_link'] = new_child.apply(find_link, axis=1)
 
 # Read all parents
 parents = pd.read_csv(str(path / all_parents_location), index_col=0)
-#parents = preprocessing_parent(parents) ####### Moet niet meer ndig zijn op het laatst
+parents = preprocessing_parent(parents) ####### Moet niet meer ndig zijn op het laatst
 
 # Parents to datetime
 parents.loc[:, 'publish_date_date'] = pd.to_datetime(parents.loc[:, 'publish_date_date'])

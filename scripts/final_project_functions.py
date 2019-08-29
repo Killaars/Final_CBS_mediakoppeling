@@ -20,12 +20,16 @@ Preprocessing fuction for both the children as the parents
 '''
 def preprocessing_parent(parents):
     # Parents
+    parents.loc[:,'related_children'] = parents['related_children'].astype(str)
+    parents.loc[:,'title'] = parents['title'].astype(str)
+    parents.loc[:,'content'] = parents['content'].astype(str)
     parents.loc[:,'publish_date_date'] = pd.to_datetime(parents.loc[:,'publish_date_date'])
+    parents.loc[:,'publish_date_date'] = parents['publish_date_date'].dt.tz_localize(None)
     parents.loc[:,'title'] = parents.loc[:,'title'].str.lower()
     parents.loc[:,'content'] = parents.loc[:,'content'].str.lower()
     parents.loc[:,'content'] = parents.loc[:,'content'].str.replace('-',' ')
     parents.loc[:,'content'] = parents.loc[:,'content'].str.replace('  ',' ')
-    parents['related_children'] = parents['related_children'].str.replace('matches/','').str.split(',')
+    parents.loc[:,'related_children'] = parents['related_children'].str.replace('matches/','').str.split(',')
     
     taxonomie_df = pd.read_csv(str(path /'data/taxonomie_df.csv'),index_col=0)
     taxonomie_df[taxonomie_df=='999'] = None
@@ -49,12 +53,13 @@ def preprocessing_parent(parents):
 
 def preprocessing_child(children):    
     # Children
+    children.loc[:,'related_parents'] = children['related_parents'].astype(str)
+    children.loc[:,'title'] = children['title'].astype(str)
+    children.loc[:,'content'] = children['content'].astype(str)
     children.loc[:,'title'] = children.loc[:,'title'].str.lower()
     children.loc[:,'content'] = children.loc[:,'content'].str.lower()
-    children['related_parents'] = children['related_parents'].str.replace('matches/','').str.split(',')
     children.loc[:,'publish_date_date'] = pd.to_datetime(children.loc[:,'publish_date_date'])
-#    children.loc[:,'content'] = children.loc[:,'content'].str.replace('-',' ') Breaks check_link
-#    children.loc[:,'content'] = children.loc[:,'content'].str.replace('  ',' ')
+    children.loc[:,'publish_date_date'] = children['publish_date_date'].dt.tz_localize(None)
     
     # replace other references to cbs with cbs itself
     children.loc[:,'content'] = children.loc[:,'content'].str.replace('centraal bureau voor de statistiek','cbs')
