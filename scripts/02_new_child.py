@@ -50,7 +50,7 @@ child_id = args.child_id
 nr_matches = args.nr_matches
 
 #child_id = '246'
-#child_id = '304042'
+##child_id = '304042'
 #nr_matches = 10
 
 #---------------------------#
@@ -76,11 +76,11 @@ parents = pd.read_csv(str(path / all_parents_location), index_col=0)
 parents = preprocessing_parent(parents) ####### Moet niet meer ndig zijn op het laatst
 
 # Parents to datetime
-parents.loc[:, 'publish_date_date'] = pd.to_datetime(parents.loc[:, 'publish_date_date'])
+parents.loc[:, 'publish_date'] = pd.to_datetime(parents.loc[:, 'publish_date'])
 
 # Select useful columns
 parents = parents[['id',
-                   'publish_date_date',
+                   'publish_date',
                    'title',
                    'content',
                    'link',
@@ -94,7 +94,7 @@ parents = parents[['id',
                    'related_children']]
 
 new_child = new_child[['id',
-                       'publish_date_date',
+                       'publish_date',
                        'title',
                        'content',
                        'related_parents',
@@ -125,10 +125,10 @@ features = features.merge(new_child, left_on='child_id', right_on='id', how='lef
 features.drop(columns=['level_0', 'level_1', 'id_x', 'id_y'], inplace=True)
 features.rename(columns={'title_x': 'title_parent',
                          'content_x': 'content_parent',
-                         'publish_date_date_x': 'publish_date_date_parent',
+                         'publish_date_x': 'publish_date_parent',
                          'title_y': 'title_child',
                          'content_y': 'content_child',
-                         'publish_date_date_y': 'publish_date_date_child'}, inplace=True)
+                         'publish_date_y': 'publish_date_child'}, inplace=True)
 
 #-------------------------------#
 # Rules before the actual model #
@@ -170,7 +170,7 @@ features[['1st_paragraph_no_stop_jaccard', '1st_paragraph_no_stop_lenmatches', '
 features.loc[features['first_paragraph_without_stopwords'].isnull(), ['1st_paragraph_no_stop_jaccard', '1st_paragraph_no_stop_lenmatches']] = 0
 
 # Determine the date score
-features['date_diff_days'] = abs(features['publish_date_date_parent']-features['publish_date_date_child']).dt.days.astype(float)
+features['date_diff_days'] = abs(features['publish_date_parent']-features['publish_date_child']).dt.days.astype(float)
 offset = 0
 scale = 7
 features['date_diff_score'] = features.apply(date_comparison, args=(offset, scale), axis=1)

@@ -23,8 +23,8 @@ def preprocessing_parent(parents):
     parents.loc[:,'related_children'] = parents['related_children'].astype(str)
     parents.loc[:,'title'] = parents['title'].astype(str)
     parents.loc[:,'content'] = parents['content'].astype(str)
-    parents.loc[:,'publish_date_date'] = pd.to_datetime(parents.loc[:,'publish_date_date'])
-    parents.loc[:,'publish_date_date'] = parents['publish_date_date'].dt.tz_localize(None)
+    parents.loc[:,'publish_date'] = pd.to_datetime(parents.loc[:,'publish_date'])
+    parents.loc[:,'publish_date'] = parents['publish_date'].dt.tz_localize(None)
     parents.loc[:,'title'] = parents.loc[:,'title'].str.lower()
     parents.loc[:,'content'] = parents.loc[:,'content'].str.lower()
     parents.loc[:,'content'] = parents.loc[:,'content'].str.replace('-',' ')
@@ -58,8 +58,8 @@ def preprocessing_child(children):
     children.loc[:,'content'] = children['content'].astype(str)
     children.loc[:,'title'] = children.loc[:,'title'].str.lower()
     children.loc[:,'content'] = children.loc[:,'content'].str.lower()
-    children.loc[:,'publish_date_date'] = pd.to_datetime(children.loc[:,'publish_date_date'])
-    children.loc[:,'publish_date_date'] = children['publish_date_date'].dt.tz_localize(None)
+    children.loc[:,'publish_date'] = pd.to_datetime(children.loc[:,'publish_date'])
+    children.loc[:,'publish_date'] = children['publish_date'].dt.tz_localize(None)
     
     # replace other references to cbs with cbs itself
     children.loc[:,'content'] = children.loc[:,'content'].str.replace('centraal bureau voor de statistiek','cbs')

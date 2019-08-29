@@ -7,7 +7,6 @@ import argparse
 from final_project_functions import preprocessing_parent
 from project_variables import project_path,\
                               all_parents_location
-
 path = Path(project_path)
 
 # Read arguments
@@ -39,7 +38,7 @@ all_parents = all_parents[all_parents['title'].str.contains('statline') == False
 
 # Select useful columns
 all_parents = all_parents[['id',
-                           'publish_date_date',
+                           'publish_date',
                            'title',
                            'content',
                            'link',
