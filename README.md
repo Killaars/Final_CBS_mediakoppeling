@@ -5,14 +5,13 @@ Repository of the final code for the CBS mediakoppeling assignment.
 1. Introduction
 2. Method
 3. Results
-4. Final model
-5. Possible future improvements
+4. Possible future improvements
 
 ## Introduction
-The CBS is the leading Dutch statistical institute. They publish their research online [(cbs.nl)](https://www.cbs.nl/ "CBS's Homepage") for the public and news agencies in the Netherlands. These results are often used in news articles or opinion pieces, by politicians, other researchers or the general public, as they are factual and use recent statistics. The CBS wants to know how often their research is used, by which parties, when and in which context. The news articles are manually matched with the CBS research to obtain this knowledge. This project is the first attempt to do this coupling automatically.
+The CBS is the leading Dutch statistical institute. They publish their research online [(cbs.nl)](https://www.cbs.nl/ "CBS's Homepage") for the public and news agencies in the Netherlands. These results are often used in news articles or opinion pieces, by politicians, other researchers or the general public, as they are factual and use recent statistics. The CBS wants to know when and how often their research is used, by which parties and in which context. The news articles are manually matched with the CBS research articles to obtain this knowledge. This project is the first attempt to do this coupling automatically.
 
 ## Method
-The coupling is based on the theory proposed by the [Fellegi and Sunter model (1969)](https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1969.10501049 "Fellegi and Sunter article"). Each media article ("child" in the code) is coupled to each CBS article ("parent") and their probability of matching is determined based on several characteristics between the articles. These characteristics are:
+The coupling is based on the theory proposed by the [Fellegi and Sunter model (1969)](https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1969.10501049 "Fellegi and Sunter article"). Here, each media article (or "child") is coupled to each CBS article ("parent") and their probability of matching is determined based on several characteristics between the articles. These characteristics are:
   * Is the link of the CBS article present in the media article?
   * Is the whole title of the CBS article present in the media article?
   * Do the keywords of the CBS article (given by the researchers) occur in the media article? If so, how much and how much relative to the total number of keywords?
@@ -38,9 +37,9 @@ Precision | 0.837 | 0.339 | 0.909 | 0.855 | 0.904 |
 Recall | 0.550 | 0.643 | 0.773 | 0.772 | 0.781 | 
 Accuracy | 0.997 | 0.990 | 0.998 | 0.998 | 0.998 | 0.997
 
-After a RandomSearch and a Gridsearch on a wide range of hyperparameter settings, the best setup for the RandomForest obtained a precision of 97.1% and a recall of 95.1% (table 2). The forest contained 150 trees, with a depth of 40 layers, no bootstrapping and a minimum sample split of 2. However, we found that this model was greatly overfitting the trainingsset and performed very poorly when using this model for the validation set. It found more than 1 million FPs with high certainty, meaning that more than a quarter of all possible matches were found. 2806 (92%) of all matched were found as well, but that is completely worthless when you also have an overload of FP's. Even though we could not pinpoint the exact cause of this, we expect some temporal discrepancy between the validation and testset to be the cause. However, we could not really account for this, as the model will also be used on new data, with possible temporal differences as well. The model had to become more robust and less prone to overfitting and was therefore pruned significantly. We found that reducing the depth of the trees to 4 (instead of 40) and only allowing leaves with at least 20 samples improved the model. The number of FP's dropped to almost 38000, but the accuracy of the FP's dropped well below the accuracy of the TP's. The highest matchingsprobability for 1925 children was the actual match and for 274 was the actual match in the top 5. 
+After a RandomSearch and a Gridsearch on a wide range of hyperparameter settings, the best setup for the RandomForest resulted in a precision of 97.1% and a recall of 95.1% (table 2). The forest contained 150 trees, a depth of 40 layers, no bootstrapping and a minimum sample split of 2. However, we found that this model was greatly overfitting the trainingsset and performed very poorly when using this model for the validation set. It found more than 1 million FPs with high certainty, meaning that more than a quarter of all possible matches were found. 2806 (92%) of all matched were found as well, but that is completely worthless when you also have an overload of FP's. Even though we could not pinpoint the exact cause of this, we expect some temporal discrepancy between the validation and testset to be the cause. However, we could not really account for this by changing the datasets, as the model will also be used on new data during production, with possible temporal differences as well. The model had to become more robust and less prone to overfitting and was therefore pruned significantly. We found that reducing the depth of the trees to 4 (instead of 40) and only allowing leaves with at least 20 samples improved the model. The number of FP's dropped to almost 38000, but the accuracy of the FP's dropped well below the accuracy of the TP's. The parent with the highest matchings probability for 1925 children was the actual match and the actual match was in the top 5 for 274 other children. Moreover, the amount of FP's drops to 414 when only the highest matchings probability is taken into account. The fact that the model is more uncertain about the FP's than the TP's becomes clear in Figure 1 and can be used for further differentiation. The figure shows that the amount of FP's is reduced faster than the amount of TP's when the probability cutoff is increased. For example, when only matches with a probability higher than 0.9 are taken into account, only 47 FP's remain, versus 1388 TP's. This relationship can be used to determine a thresshold value for automatic matching of the articles and can be tweaked to obtain more reliability or more automatic matches. 
 
-
+##### Table 2
 || Unpruned model | Pruned model
 --- | --- | ---
 **Trainingsset** | | 
@@ -64,11 +63,12 @@ Nr of Trees | 150 | 150
 Depth | 40 | 4
 Minimum samples per leaf | 1 | 20
 
+##### Figure 1:
+![alt text](https://github.com/Killaars/Final_CBS_mediakoppeling/blob/master/TPandFPvs_probabilityplot.png "probability_plot")
 
-
-  
-  
-  
+ 
   ## Possible future improvements
-  
-  Better word vectors? https://fasttext.cc/docs/en/crawl-vectors.html
+  Given the fact that this project was not very long and had to build the model from scratch, there remain several possible improvements that were not, or only very briefly, explored. These are described below to provide a starting point for any future work:
+  * Which words are found? This model does not take the quality of the keywords that are found into account. It only uses 'if' keywords are found and 'how much'. The jaccard scores that play a large role in the final probability consist of the number of keywords that occur in the child article, divided by the total number of possible keywords of the parent. If 3 out of 4 keywords are found, the score becomes 0.75 while 1 out 1 returns a score of 1, even though the former match might be stronger. This is partly accounted for in the 'len_matches' variable, but could be improved.
+  * Better word vectors. The model used word vectors determined by fasttext from the Dutch Wikipedia. However, more relevant vectors for CBS articles and newssites might improve the reliability of these vectors. Due to time constraints this is not done.
+  * Predicting the CBS themes and using this as a feature. It might be possible to determine the CBS themes related to the children articles and use this as a feature to determine the parent article. If the predicted theme and the parent theme correspond, the match probability should be higher than if they do not correspond. This was explored briefly in [this repository](https://github.com/Killaars/CBS-themes) and showed some promise, but was not included or explored further. 
