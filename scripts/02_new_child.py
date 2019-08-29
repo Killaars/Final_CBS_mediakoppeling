@@ -26,7 +26,7 @@ from final_project_functions import preprocessing_child,\
                                 remove_numbers
 from project_variables import project_path,\
                               all_parents_location
-all_parents_location = 'data/all_parents.csv'
+
                               
 import warnings
 warnings.filterwarnings("ignore")
