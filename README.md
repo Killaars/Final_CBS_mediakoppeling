@@ -2,11 +2,19 @@
 Repository of the final code for the CBS mediakoppeling assignment.
 
 ## Table of contents
+0. Requirements
 1. Introduction
 2. Method
 3. Results
 4. Possible future improvements
 5. Other scripts
+
+## Requirements
+* python                             3.7.3
+* pandas                             0.24.2
+* recordlinkage                      0.13.2
+* scikit-learn                       0.21.2
+* spacy                              2.1.6
 
 ## Introduction
 The CBS is the leading Dutch statistical institute. They publish their research online [(cbs.nl)](https://www.cbs.nl/ "CBS's Homepage") for the public and the news agencies in the Netherlands. Their results are often used in news articles or opinion pieces, by politicians, other researchers or the general public, as they are factual and use recent statistics. The CBS wants to know when and how often their research is used, by which parties and in which context. The news articles are manually matched with the CBS research articles to obtain this knowledge. This project is the first attempt to do this coupling automatically.
