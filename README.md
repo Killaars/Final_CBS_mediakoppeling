@@ -20,11 +20,13 @@ Repository of the final code for the CBS mediakoppeling assignment.
 The CBS is the leading Dutch statistical institute. They publish their research online [(cbs.nl)](https://www.cbs.nl/ "CBS's Homepage") for the public and the news agencies in the Netherlands. Their results are often used in news articles or opinion pieces, by politicians, other researchers or the general public, as they are factual and use recent statistics. The CBS wants to know when and how often their research is used, by which parties and in which context. The news articles are manually matched with the CBS research articles to obtain this knowledge. This project is the first attempt to do this coupling automatically.
 
 ## Method
-The coupling is based on the theory proposed by the [Fellegi and Sunter model (1969)](https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1969.10501049 "Fellegi and Sunter article"). Here, each media article (or "child") is coupled to each CBS article ("parent") and their probability of matching is derived from several characteristics between the articles. These characteristics are:
+
+The coupling method is based on classifying all candidate pairs into matches and non-matches, somewhat similar to the
+method proposed by [Fellegi and Sunter (1969)](https://amstat.tandfonline.com/doi/abs/10.1080/01621459.1969.10501049 "Fellegi and Sunter article"). Here, each media article (or "child") is paired with each CBS article ("parent") and their probability of matching is derived from several characteristics between the articles. These characteristics are:
   * Do the keywords of the CBS article (given by the researchers) occur in the media article? If so, how much and how much relative to the total number of keywords?
-  * And the broader and top term of the keywords? 
-  * What about the words of the CBS title (without stopwords?)
-  * And the words of the first paragraph of the CBS article without stopwords?
+  * For each key word, CBS has strongly related concepts (top terms) and weaker related concepts (broader terms). Occurrence and relative count are incorporated as well.
+  * Similar for words of the CBS title (without stopwords?)
+  * Similar for words of the first paragraph of the CBS article without stopwords.
   * Do the numbers of the CBS article match with the numbers of the media article? Numbers are first isolated, standardized and converted to integers (e.g. ten --> 10, 10 thousand --> 10000, 10% --> 10 percent, 10.000 (ten thousand) --> 10000, half a million --> 500000 etc.).
   Both how much of the features above are found in the child article and how much they could have been found are used in the match prediction. Apart from this, the following characteristics also play a role:
   * Is the link of the CBS article present in the media article?
@@ -78,10 +80,11 @@ Minimum samples per leaf | 1 | 20
 
  
   ## Possible future improvements
-  Given the fact that this project was not very long and had to build the model from scratch, there remain several possible improvements that were not, or only very briefly, explored. These are described below to provide a starting point for any future work:
+  Given the limited time span for this project and the fact that all features and the model had to be build from scratch, there remain several possible improvements that were not, or only very briefly, explored. These are described below to provide a starting point for any future work:
   * Which words are found? Probably the biggest improvement can be gained if the model would take the quality of the keywords that are found into account. It only uses 'if' keywords are found and 'how much'. The jaccard scores that play a large role in the final probability consist of the number of keywords that occur in the child article, divided by the total number of possible keywords of the parent. If 3 out of 4 keywords are found, the score becomes 0.75 while 1 out 1 returns a score of 1, even though the former match might be stronger. This is partly accounted for in the 'len_matches' variable, but could be improved.
   * Better word vectors. The model used word vectors determined by fasttext from the Dutch Wikipedia. However, more relevant vectors for CBS articles and news sites might improve the reliability of these vectors. Due to time constraints this is not done.
   * Predicting the CBS themes and using this as a feature. It might be possible to determine the CBS themes related to the children articles and use this as a feature to determine the parent article. If the predicted theme and the parent theme correspond, the match probability should be higher than if they do not correspond. This was explored briefly in [this repository](https://github.com/Killaars/CBS-themes) and showed some promise, but was not included or explored further.
+  * The media source of the 'child' article.
   
   ## Other scripts
   This repository only contains the final scripts for this project. More, but relatively unfinished/undocumented, scripts can be found at [the working repository](https://github.com/Killaars/CBS2_mediakoppeling).
