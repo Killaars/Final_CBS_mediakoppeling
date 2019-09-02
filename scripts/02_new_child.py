@@ -148,7 +148,10 @@ if (features['feature_whole_title'].sum() > 0) | (features['feature_link_score']
     to_return.loc[:, 'predicted_match'] = to_return[['predicted_match']].applymap("{0:.4f}".format)
 
     # save
-    to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))))
+    to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))),
+         index = False, 
+         header = ['c','p','%'],
+         float_format='%.4f')
     sys.exit("Prediction made based on link and/or title")
 
 #-------------------------------------------------------------#
