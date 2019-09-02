@@ -33,6 +33,7 @@ method proposed by [Fellegi and Sunter (1969)](https://amstat.tandfonline.com/do
   * Is the whole title of the CBS article present in the media article?
   * Is the media article published within two days after the CBS article?
   * The semantic similarity between the titles and the actual content of the media article and CBS article is determined, based on wordvectors of [fasttext](https://fasttext.cc/docs/en/pretrained-vectors.html).
+ 
 After the features of the possible matches were found, a sample of the data from march-april 2019 was used as a train/test set to determine which model type was to be used. This dataset contained 1637 matches and 271944 non-matches. Based on this, a type of model was chosen to be trained and tuned on the full dataset. The final models were trained on a dataset of articles between 01-11-2017 and 24-04-2019. These articles were all manually matched by CBS employees during this period. Of these articles, all matches (86.000) were used, together with a random sample of 414.000 non-matches. The resulting dataset of 500.000 records was split 0.7-0.3 and used as a test/train set. New articles between 25-04-2019 and 14-08-2019 were used for validation of the model. This validation set contained 3045 matches and 3917955 non-matches, a ratio more similar to the actual ratio when the model would be used in production. 
 
 ## Results
@@ -85,6 +86,7 @@ Minimum samples per leaf | 1 | 20
   * Better word vectors. The model used word vectors determined by fasttext from the Dutch Wikipedia. However, more relevant vectors for CBS articles and news sites might improve the reliability of these vectors. Due to time constraints this is not done.
   * Predicting the CBS themes and using this as a feature. It might be possible to determine the CBS themes related to the children articles and use this as a feature to determine the parent article. If the predicted theme and the parent theme correspond, the match probability should be higher than if they do not correspond. This was explored briefly in [this repository](https://github.com/Killaars/CBS-themes) and showed some promise, but was not included or explored further.
   * The media source of the 'child' article.
+  * Using an unsupervised method of creating new keywords for the articles. For example topic modelling or vector word similarity. 
   
   ## Other scripts
   This repository only contains the final scripts for this project. More, but relatively unfinished/undocumented, scripts can be found at [the working repository](https://github.com/Killaars/CBS2_mediakoppeling).
