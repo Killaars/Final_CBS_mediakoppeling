@@ -577,3 +577,14 @@ def own_word2num(string):
     }
 
     return(getal_dictionary[string])
+    
+def keep_only_words(row,column):
+    row[column] = re.sub(r'set()','',row[column])
+    if column != 'numbers_matches':
+        row[column] = re.sub(r'[^\w\s]','',row[column])
+        row[column] = row[column].split(' ')
+    if column == 'numbers_matches':
+        row[column] = re.sub(r"[{}'()]",'',row[column])
+        row[column] = row[column].split(',')
+        row[column] = [x.strip(' ') for x in row[column]]
+    return row[column]

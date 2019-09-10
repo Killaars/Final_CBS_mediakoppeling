@@ -23,7 +23,8 @@ from final_project_functions import preprocessing_child,\
                                 find_numbers,\
                                 remove_stopwords_from_content,\
                                 similarity,\
-                                remove_numbers
+                                remove_numbers,\
+                                keep_only_words
 from project_variables import project_path,\
                               all_parents_location
 
@@ -37,21 +38,21 @@ modelpath = path / 'scripts'
 wordvectorpath = path / 'model/nl_vectors_wiki_lg/'
 nlp = spacy.load(wordvectorpath)
 
-# Read arguments
-my_parser = argparse.ArgumentParser(description='Add new parent to parent database')
-my_parser.add_argument('child_id',
-                       type=str,
-                       help='ID of the new child article')
-my_parser.add_argument('nr_matches',
-                       type=int,
-                       help='Number of matches to return')
-args = my_parser.parse_args()
-child_id = args.child_id
-nr_matches = args.nr_matches
+## Read arguments
+#my_parser = argparse.ArgumentParser(description='Add new parent to parent database')
+#my_parser.add_argument('child_id',
+#                       type=str,
+#                       help='ID of the new child article')
+#my_parser.add_argument('nr_matches',
+#                       type=int,
+#                       help='Number of matches to return')
+#args = my_parser.parse_args()
+#child_id = args.child_id
+#nr_matches = args.nr_matches
 
-#child_id = '246'
-##child_id = '304042'
-#nr_matches = 10
+child_id = '246'
+child_id = '341'
+nr_matches = 10
 
 #---------------------------#
 # Reading and preprocessing #
@@ -145,12 +146,14 @@ if (features['feature_whole_title'].sum() > 0) | (features['feature_link_score']
     # final DF
     to_return = features[['child_id', 'parent_id', 'predicted_match']]
     to_return['predicted_match'] = to_return['predicted_match'].clip(0, 1)
+    for column in 'sleutelwoorden_matches','BT_TT_matches','title_no_stop_matches','1st_paragraph_no_stop_matches','numbers_matches':
+        to_return.loc[:,column] = ['']    
     to_return.loc[:, 'predicted_match'] = to_return[['predicted_match']].applymap("{0:.4f}".format)
 
     # save
     to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))),
          index = False, 
-         header = ['c','p','%'],
+         header = ['c','p','%','sleutelwoorden','BT_TT','titel','1st_para','getallen'],
          float_format='%.4f')
     sys.exit("Prediction made based on link and/or title")
 
@@ -224,10 +227,14 @@ features.loc[:, 'predicted_match'] = y_proba[:, 1]
 features.sort_values(by=['predicted_match'], ascending=False, inplace=True)
 
 # final DF
-to_return = features[['child_id', 'parent_id', 'predicted_match']]
+to_return = features[['child_id', 'parent_id', 'predicted_match','sleutelwoorden_matches','BT_TT_matches','title_no_stop_matches','1st_paragraph_no_stop_matches','numbers_matches']]
+
+for column in ['sleutelwoorden_matches','BT_TT_matches','title_no_stop_matches','1st_paragraph_no_stop_matches','numbers_matches']:    
+    to_return.loc[:,column] = to_return.loc[:,column].astype(str)
+    to_return.loc[:,column] = to_return.apply(keep_only_words,args=(column,),axis=1)
 
 # save
 to_return[:nr_matches].to_csv(str(path / ('data/c_%s_output.csv' %(child_id))),
          index = False, 
-         header = ['c','p','%'],
+         header = ['c','p','%','sleutelwoorden','BT_TT','titel','1st_para','getallen'],
          float_format='%.4f')
