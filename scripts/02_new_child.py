@@ -38,21 +38,21 @@ modelpath = path / 'scripts'
 wordvectorpath = path / 'model/nl_vectors_wiki_lg/'
 nlp = spacy.load(wordvectorpath)
 
-## Read arguments
-#my_parser = argparse.ArgumentParser(description='Add new parent to parent database')
-#my_parser.add_argument('child_id',
-#                       type=str,
-#                       help='ID of the new child article')
-#my_parser.add_argument('nr_matches',
-#                       type=int,
-#                       help='Number of matches to return')
-#args = my_parser.parse_args()
-#child_id = args.child_id
-#nr_matches = args.nr_matches
+# Read arguments
+my_parser = argparse.ArgumentParser(description='Add new parent to parent database')
+my_parser.add_argument('child_id',
+                       type=str,
+                       help='ID of the new child article')
+my_parser.add_argument('nr_matches',
+                       type=int,
+                       help='Number of matches to return')
+args = my_parser.parse_args()
+child_id = args.child_id
+nr_matches = args.nr_matches
 
-child_id = '246'
-child_id = '341'
-nr_matches = 10
+#child_id = '246'
+#child_id = '341'
+#nr_matches = 10
 
 #---------------------------#
 # Reading and preprocessing #
